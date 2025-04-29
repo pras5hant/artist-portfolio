@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Portfolio of [Your Name], a creative artist and developer showcasing innovative projects.">
+  <meta name="keywords" content="portfolio, artist, developer, programming, web development, creative">
+  <meta name="author" content="[Your Name]">
+  <title>[Your Name] - Dhamakedar Portfolio</title>
+  <!-- Tailwind CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- Google Fonts (Poppins) -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- GSAP for Animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+  <!-- Lightbox CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #0a0a0a;
+      color: #ffffff;
+      margin: 0;
+      overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
+    }
+    body.light-mode {
+      background: #fafafa;
+      color: #0a0a0a;
+    }
+    .navbar {
+      background: rgba(10, 10, 10, 0.95);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      padding: 1rem 0;
+      z-index: 1000;
+    }
+    .navbar.light-mode {
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+    .navbar a {
+      color: #ffffff;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+    .navbar.light-mode a {
+      color: #0a0a0a;
+    }
+    .navbar a:hover {
+      color: #ff4d4d;
+    }
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+      background-attachment: fixed;
+    }
+    .hero h1 {
+      font-size: 5.5rem;
+      font-weight: 800;
+      text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.7);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    .card {
+      background: #1c1c1c;
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform 0.4s, box-shadow 0.4s;
+    }
+    .light-mode .card {
+      background: #ffffff;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+    .card:hover {
+      transform: translateY(-15px);
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.5);
+    }
+    .filter-btn {
+      background: #ff4d4d;
+      color: #ffffff;
+      padding: 0.75rem 2rem;
+      border-radius: 8px;
+      transition: background 0.3s;
+    }
+    .filter-btn:hover {
+      background: #e63c3c;
+    }
+    .review-card {
+      background: #1c1c1c;
+      border-radius: 12px;
+      padding: 2rem;
+      transition: transform 0.3s;
+    }
+    .light-mode .review-card {
+      background: #ffffff;
+    }
+    .review-card:hover {
+      transform: scale(1.02);
+    }
+    .signup-form input, .contact-form input, .contact-form textarea, .review-form input, .review-form textarea, .review-form select {
+      background: #2a2a2a;
+      border: none;
+      border-radius: 8px;
+      padding: 1rem;
+      color: #ffffff;
+      width: 100%;
+    }
+    .light-mode .signup-form input, .light-mode .contact-form input, .light-mode .contact-form textarea, .light-mode .review-form input, .light-mode .review-form textarea, .light-mode .review-form select {
+      background: #e0e0e0;
+      color: #0a0a0a;
+    }
+    .signup-form button, .contact-form button, .review-form button {
+      background: #ff4d4d;
+      color: #ffffff;
+      padding: 1rem 2.5rem;
+      border-radius: 8px;
+      transition: background 0.3s;
+    }
+    .signup-form button:hover, .contact-form button:hover, .review-form button:hover {
+      background: #e63c3c;
+    }
+    .parallax {
+      background-attachment: fixed;
+      background-position: center;
+      background-size: cover;
+    }
+    footer {
+      background: #0a0a0a;
+      padding: 3rem 0;
+    }
+    .light-mode footer {
+      background: #e0e0e0;
+    }
+    /* Animations */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s, transform 0.5s;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 3.5rem;
+      }
+      .hero p {
+        font-size: 1rem;
+      }
+      .navbar {
+        padding: 0.5rem 0;
+      }
+      .signup-form, .contact-form, .review-form {
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- React and Dependencies -->
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.4.0/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.21.4/babel.min.js"></script>
+  <!-- Lightbox JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // Error Boundary Component
+    class ErrorBoundary extends React.Component {
+      state = { hasError: false };
+      static getDerivedStateFromError(error) {
+        return { hasError: true };
+      }
+      render() {
+        if (this.state.hasError) {
+          return <h1 className="text-center py-20">Something went wrong. Please try again later.</h1>;
+        }
+        return this.props.children;
+      }
+    }
+
+    const App = () => {
+      const [projects, setProjects] = useState([]);
+      const [reviews, setReviews] = useState([]);
+      const [filter, setFilter] = useState('all');
+      const [isLightMode, setIsLightMode] = useState(false);
+      const [formErrors, setFormErrors] = useState({});
+      const [isSignedUp, setIsSignedUp] = useState(false);
+
+      // Fetch data
+      useEffect(() => {
+        if (isSignedUp) {
+          axios.get('http://localhost:5000/api/projects').then(res => setProjects(res.data)).catch(() => alert('Error fetching projects'));
+          axios.get('http://localhost:5000/api/reviews').then(res => setReviews(res.data)).catch(() => alert('Error fetching reviews'));
+        }
+
+        // GSAP animations
+        gsap.from('.hero-content', { opacity: 0, y: 150, duration: 1.5, ease: 'power4.out' });
+        gsap.from('.navbar', { y: -100, duration: 1, ease: 'power4.out' });
+
+        // Scroll-triggered animations
+        const fadeIns = document.querySelectorAll('.fade-in');
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+            }
+          });
+        }, { threshold: 0.1 });
+        fadeIns.forEach(element => observer.observe(element));
+      }, [isSignedUp]);
+
+      // Validate form
+      const validateForm = (data, isReview = false, isSignup = false) => {
+        const errors = {};
+        if (!data.name || data.name.length < 2) errors.name = 'Name must be at least 2 characters';
+        if (!data.email || !/^\S+@\S+\.\S+$/.test(data.email)) errors.email = 'Valid email is required';
+        if (!data.phone || !/^\+?\d{10,15}$/.test(data.phone)) errors.phone = 'Valid phone number is required';
+        if (!data.country) errors.country = 'Country is required';
+        if (isSignup && (!data.password || data.password.length < 6)) errors.password = 'Password must be at least 6 characters';
+        if (!isReview && !isSignup && (!data.message || data.message.length < 10)) errors.message = 'Message must be at least 10 characters';
+        if (isReview && (!data.comment || data.comment.length < 10)) errors.comment = 'Review must be at least 10 characters';
+        return errors;
+      };
+
+      // Handle signup form submission
+      const handleSignupSubmit = (e) => {
+        e.preventDefault();
+        const formData = {
+          name: e.target.name.value,
+          email: e.target.email.value,
+          phone: e.target.phone.value,
+          country: e.target.country.value,
+          password: e.target.password.value
+        };
+        const errors = validateForm(formData, false, true);
+        if (Object.keys(errors).length) {
+          setFormErrors(errors);
+          return;
+        }
+        axios.post('http://localhost:5000/api/signup', formData)
+          .then(() => {
+            alert('Signup successful! Welcome to the portfolio.');
+            setIsSignedUp(true);
+            e.target.reset();
+            setFormErrors({});
+          })
+          .catch((err) => {
+            const message = err.response?.data?.error || 'Error during signup.';
+            alert(message);
+          });
+      };
+
+      // Handle contact form submission
+      const handleContactSubmit = (e) => {
+        e.preventDefault();
+        const formData = {
+          name: e.target.name.value,
+          email: e.target.email.value,
+          phone: e.target.phone.value,
+          country: e.target.country.value,
+          message: e.target.message.value
+        };
+        const errors = validateForm(formData);
+        if (Object.keys(errors).length) {
+          setFormErrors(errors);
+          return;
+        }
+        axios.post('http://localhost:5000/api/contact', formData)
+          .then(() => {
+            alert('Message sent successfully!');
+            e.target.reset();
+            setFormErrors({});
+          })
+          .catch(() => alert('Error sending message.'));
+      };
+
+      // Handle review submission
+      const handleReviewSubmit = (e) => {
+        e.preventDefault();
+        const formData = {
+          name: e.target.reviewName.value,
+          email: e.target.reviewEmail.value,
+          phone: e.target.reviewPhone.value,
+          country: e.target.reviewCountry.value,
+          comment: e.target.comment.value
+        };
+        const errors = validateForm(formData, true);
+        if (Object.keys(errors).length) {
+          setFormErrors(errors);
+          return;
+        }
+        axios.post('http://localhost:5000/api/reviews', formData)
+          .then(res => {
+            setReviews([res.data, ...reviews]);
+            e.target.reset();
+            setFormErrors({});
+          })
+          .catch(() => alert('Error submitting review.'));
+      };
+
+      // Filter projects
+      const filteredProjects = filter === 'all' ? projects : projects.filter(p => p.language === filter);
+
+      // Toggle light/dark mode
+      const toggleMode = () => {
+        setIsLightMode(!isLightMode);
+        document.body.classList.toggle('light-mode');
+        document.querySelector('.navbar').classList.toggle('light-mode');
+      };
+
+      if (!isSignedUp) {
+        return (
+          <ErrorBoundary>
+            <div className={isLightMode ? 'light-mode' : ''}>
+              <section className="min-h-screen flex items-center justify-center bg-[#0a0a0a] light-mode:bg-[#fafafa]">
+                <div className="container mx-auto text-center px-4">
+                  <h2 className="text-4xl font-bold mb-8">Sign Up to Explore</h2>
+                  <form className="signup-form w-full md:w-1/2 mx-auto" onSubmit={handleSignupSubmit}>
+                    <input type="text" name="name" placeholder="Your Name" required className="mb-4" />
+                    {formErrors.name && <p className="text-red-500 text-sm">{formErrors.name}</p>}
+                    <input type="email" name="email" placeholder="Your Email" required className="mb-4" />
+                    {formErrors.email && <p className="text-red-500 text-sm">{formErrors.email}</p>}
+                    <input type="text" name="phone" placeholder="Your Phone (+1234567890)" required className="mb-4" />
+                    {formErrors.phone && <p className="text-red-500 text-sm">{formErrors.phone}</p>}
+                    <select name="country" required className="mb-4">
+                      <option value="">Select Country</option>
+                      <option value="India">India</option>
+                      <option value="Nepal">Nepal</option>
+                      <option value="USA">USA</option>
+                      <option value="UK">UK</option>
+                      <option value="Other">Other</option>
+                    </select>
+                    {formErrors.country && <p className="text-red-500 text-sm">{formErrors.country}</p>}
+                    <input type="password" name="password" placeholder="Your Password" required className="mb-4" />
+                    {formErrors.password && <p className="text-red-500 text-sm">{formErrors.password}</p>}
+                    <button type="submit">Sign Up</button>
+                  </form>
+                </div>
+              </section>
+            </div>
+          </ErrorBoundary>
+        );
+      }
+
+      return (
+        <ErrorBoundary>
+          <div className={isLightMode ? 'light-mode' : ''}>
+            {/* Navbar */}
+            <nav className="navbar fixed-top">
+              <div className="container mx-auto flex justify-between items-center px-4">
+                <a href="#home" className="text-2xl font-bold">[Your Name]</a>
+                <div className="hidden md:flex space-x-8">
+                  <a href="#home">Home</a>
+                  <a href="#about">About</a>
+                  <a href="#skills">Skills</a>
+                  <a href="#portfolio">Portfolio</a>
+                  <a href="#reviews">Reviews</a>
+                  <a href="#blog">Blog</a>
+                  <a href="#contact">Contact</a>
+                  <button onClick={toggleMode} className="text-xl">
+                    {isLightMode ? <i className="fas fa-moon"></i> : <i className="fas fa-sun"></i>}
+                  </button>
+                </div>
+                <button className="md:hidden" onClick={() => document.getElementById('mobile-menu').classList.toggle('hidden')}>
+                  <i className="fas fa-bars text-xl"></i>
+                </button>
+              </div>
+              <div className="hidden md:hidden bg-[#0a0a0a] light-mode:bg-white" id="mobile-menu">
+                <div className="flex flex-col space-y-4 py-4 px-6">
+                  <a href="#home">Home</a>
+                  <a href="#about">About</a>
+                  <a href="#skills">Skills</a>
+                  <a href="#portfolio">Portfolio</a>
+                  <a href="#reviews">Reviews</a>
+                  <a href="#blog">Blog</a>
+                  <a href="#contact">Contact</a>
+                  <button onClick={toggleMode} className="text-left">
+                    {isLightMode ? 'Dark Mode' : 'Light Mode'}
+                  </button>
+                </div>
+              </div>
+            </nav>
+
+            {/* Hero Section */}
+            <section id="home" className="hero parallax fade-in">
+              <div className="container mx-auto hero-content text-center">
+                <h1>Hey, I'm [Your Name]</h1>
+                <p className="text-2xl mt-4">Creating Mind-Blowing Digital Art & Code</p>
+                <a href="#portfolio" className="mt-6 inline-block bg-[#ff4d4d] text-white font-semibold py-3 px-8 rounded-lg hover:bg-[#e63c3c] transition">Discover My Work</a>
+              </div>
+            </section>
+
+            {/* About Section */}
+            <section id="about" className="py-24 fade-in">
+              <div className="container mx-auto text-center px-4">
+                <h2 className="text-4xl font-bold mb-10">About Me</h2>
+                <div className="flex flex-col md:flex-row items-center">
+                  <div className="md:w-1/2 mb-8 md:mb-0">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" className="rounded-xl shadow-2xl w-3/4 mx-auto" alt="About Me" loading="lazy" />
+                  </div>
+                  <div className="md:w-1/2 text-left px-4">
+                    <p className="text-lg">I'm a passionate artist and developer with expertise in JavaScript, Python, Java, and more. My work is all about blending creativity with cutting-edge technology to craft unforgettable digital experiences.</p>
+                    <p className="text-lg mt-4">Ready to collaborate and make something epic? Let's do this!</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Skills Section */}
+            <section id="skills" className="py-24 bg-[#1c1c1c] light-mode:bg-white parallax fade-in" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80)' }}>
+              <div className="container mx-auto text-center px-4">
+                <h2 className="text-4xl font-bold mb-10">My Skills</h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                  {['JavaScript', 'Python', 'Java', 'React', 'Node.js', 'PostgreSQL', 'HTML/CSS', 'C++', 'TypeScript', 'Go'].map(skill => (
+                    <div key={skill} className="card p-6">
+                      <p className="font-semibold text-lg">{skill}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* Portfolio Section */}
+            <section id="portfolio" className="py-24 fade-in">
+              <div className="container mx-auto text-center px-4">
+                <h2 className="text-4xl font-bold mb-10">Portfolio</h2>
+                <div className="flex justify-center space-x-4 mb-10 flex-wrap">
+                  {['all', 'JavaScript', 'Python', 'Java'].map(lang => (
+                    <button key={lang} className="filter-btn m-2" onClick={() => setFilter(lang)}>{lang.charAt(0).toUpperCase() + lang.slice(1)}</button>
+                  ))}
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {filteredProjects.map(project => (
+                    <div key={project.id} className="card">
+                      <a href={project.image} data-lightbox="portfolio" data-title={project.title}>
+                        <img src={project.image} className="w-full h-56 object-cover" alt={project.title} loading="lazy" />
+                      </a>
+                      <div className="p-6">
+                        <h3 className="text-2xl font-semibold">{project.title}</h3>
+                        <p className="text-sm mt-2">{project.description}</p>
+                        <p className="text-sm text-[#ff4d4d] mt-2">{project.language}</p>
+                        <a href={project.link} target="_blank" className="mt-4 inline-block text-[#ff4d4d] font-semibold hover:underline">View Project</a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* Reviews Section */}
+            <section id="reviews" className="py-24 bg-[#1c1c1c] light-mode:bg-white fade-in">
+              <div className="container mx-auto text-center px-4">
+                <h2 className="text-4xl font-bold mb-10">Client Reviews</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                  {reviews.map(review => (
+                    <div key={review.id} className="review-card">
+                      <p className="italic text-lg">"{review.comment}"</p>
+                      <p className="mt-2 font-semibold">{review.name} - {review.country}</p>
+                      <p className="text-sm text-gray-400">{review.email} | {review.phone}</p>
+                    </div>
+                  ))}
+                </div>
+                <form className="review-form w-full md:w-1/2 mx-auto" onSubmit={handleReviewSubmit}>
+                  <input type="text" name="reviewName" placeholder="Your Name" required className="mb-4" />
+                  {formErrors.name && <p className="text-red-500 text-sm">{formErrors.name}</p>}
+                  <input type="email" name="reviewEmail" placeholder="Your Email" required className="mb-4" />
+                  {formErrors.email && <p className="text-red-500 text-sm">{formErrors.email}</p>}
+                  <input type="text" name="reviewPhone" placeholder="Your Phone (+1234567890)" required className="mb-4" />
+                  {formErrors.phone && <p className="text-red-500 text-sm">{formErrors.phone}</p>}
+                  <select name="reviewCountry" required className="mb-4">
+                    <option value="">Select Country</option>
+                    <option value="India">India</option>
+                    <option value="Nepal">Nepal</option>
+                    <option value="USA">USA</option>
+                    <option value="UK">UK</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  {formErrors.country && <p className="text-red-500 text-sm">{formErrors.country}</p>}
+                  <textarea name="comment" placeholder="Your Review" rows="4" required className="mb-4"></textarea>
+                  {formErrors.comment && <p className="text-red-500 text-sm">{formErrors.comment}</p>}
+                  <button type="submit">Submit Review</button>
+                </form>
+              </div>
+            </section>
+
+            {/* Blog Section */}
+            <section id="blog" className="py-24 parallax fade-in" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80)' }}>
+              <div className="container mx-auto text-center px-4">
+                <h2 className="text-4xl font-bold mb-10">Blog</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {[
+                    { title: 'React Hooks Unleashed', desc: 'Mastering state management with React Hooks.', img: 'https://images.unsplash.com/photo-1633356122544-f1347c4d9a9b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
+                    { title: 'Python Data Magic', desc: 'Using Pandas and NumPy for data analysis.', img: 'https://images.unsplash.com/photo-1551288049-b1f991c78f58?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
+                    { title: 'Java Like a Pro', desc: 'Best practices for clean Java code.', img: 'https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' }
+                  ].map(blog => (
+                    <div key={blog.title} className="card">
+                      <a href={blog.img} data-lightbox="blog" data-title={blog.title}>
+                        <img src={blog.img} className="w-full h-56 object-cover" alt={blog.title} loading="lazy" />
+                      </a>
+                      <div className="p-6">
+                        <h3 className="text-2xl font-semibold">{blog.title}</h3>
+                        <p className="text-sm mt-2">{blog.desc}</p>
+                        <a href="#" className="mt-4 inline-block text-[#ff4d4d] font-semibold hover:underline">Read More</a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* Contact Section */}
+            <section id="contact" className="py-24 bg-[#1c1c1c] light-mode:bg-white fade-in">
+              <div className="container mx-auto text-center px-4">
+                <h2 className="text-4xl font-bold mb-10">Contact Me</h2>
+                <form className="contact-form w-full md:w-1/2 mx-auto" onSubmit={handleContactSubmit}>
+                  <input type="text" name="name" placeholder="Your Name" required className="mb-4" />
+                  {formErrors.name && <p className="text-red-500 text-sm">{formErrors.name}</p>}
+                  <input type="email" name="email" placeholder="Your Email" required className="mb-4" />
+                  {formErrors.email && <p className="text-red-500 text-sm">{formErrors.email}</p>}
+                  <input type="text" name="phone" placeholder="Your Phone (+1234567890)" required className="mb-4" />
+                  {formErrors.phone && <p className="text-red-500 text-sm">{formErrors.phone}</p>}
+                  <select name="country" required className="mb-4">
+                    <option value="">Select Country</option>
+                    <option value="India">India</option>
+                    <option value="Nepal">Nepal</option>
+                    <option value="USA">USA</option>
+                    <option value="UK">UK</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  {formErrors.country && <p className="text-red-500 text-sm">{formErrors.country}</p>}
+                  <textarea name="message" placeholder="Your Message" rows="5" required className="mb-4"></textarea>
+                  {formErrors.message && <p className="text-red-500 text-sm">{formErrors.message}</p>}
+                  <button type="submit">Send Message</button>
+                </form>
+              </div>
+            </section>
+
+            {/* Footer */}
+            <footer className="fade-in">
+              <div className="container mx-auto text-center px-4">
+                <p className="mb-4">© 2025 [Your Name]. All Rights Reserved.</p>
+                <div className="flex justify-center space-x-8">
+                  <a href="https://github.com" target="_blank"><i className="fab fa-github fa-2x"></i></a>
+                  <a href="https://linkedin.com" target="_blank"><i className="fab fa-linkedin fa-2x"></i></a>
+                  <a href="https://twitter.com" target="_blank"><i className="fab fa-twitter fa-2x"></i></a>
+                </div>
+              </div>
+            </footer>
+          </div>
+        </ErrorBoundary>
+      );
+    };
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
