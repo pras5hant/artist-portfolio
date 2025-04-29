@@ -2,7 +2,7 @@ const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const app = express();
 
 // Middleware
