@@ -206,8 +206,11 @@
       // Fetch data
       useEffect(() => {
         if (isSignedUp) {
-          axios.get('http://localhost:5000/api/projects').then(res => setProjects(res.data)).catch(() => alert('Error fetching projects'));
-          axios.get('http://localhost:5000/api/reviews').then(res => setReviews(res.data)).catch(() => alert('Error fetching reviews'));
+          axios.get('https://artist-portfolio-backend.onrender.com/api/projects')
+axios.get('https://artist-portfolio-backend.onrender.com/api/reviews')
+axios.post('https://artist-portfolio-backend.onrender.com/api/signup')
+axios.post('https://artist-portfolio-backend.onrender.com/api/reviews')
+axios.post('https://artist-portfolio-backend.onrender.com/api/contact')
         }
 
         // GSAP animations
