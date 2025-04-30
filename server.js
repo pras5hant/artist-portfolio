@@ -7,26 +7,27 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: 'https://codevibesyou.netlify.app/',
+  origin: 'https://codevibesyou.netlify.app',
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type']
 }));
+app.use(express.json());
+
 // PostgreSQL Connection
 const pool = new Pool({
-  user: 'postgres', // Replace with your PostgreSQL username
-  host: 'localhost',
-  database: 'portfolio_db',
-  password: '@@@123###456' , // Replace with your PostgreSQL password
-  port: 5432
+  user: process.env.user,
+  host: process.env.host,
+  database: process.env.database,
+  password: process.env.password,
+  port: process.env.port
 });
 
 // Nodemailer Setup
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'prashant2580thakur@gmail.com' , // Replace with your Gmail address
-    pass: 'xzcr caux niqm bfgh'
- // Replace with your Gmail App Password
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
   }
 });
 
@@ -66,8 +67,8 @@ app.post('/api/signup', async (req, res) => {
     );
     // Send email notification
     await transporter.sendMail({
-      from: 'your_email@gmail.com',
-      to: 'your_email@gmail.com',
+      from: process.env.EMAIL_USER,
+      to: process.env.EMAIL_USER,
       subject: `New User Signup: ${name}`,
       text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nCountry: ${country}`
     });
@@ -132,8 +133,8 @@ app.post('/api/contact', async (req, res) => {
       [name, email, phone, country, message]
     );
     await transporter.sendMail({
-      from: 'your_email@gmail.com',
-      to: 'your_email@gmail.com',
+      from: process.env.EMAIL_USER,
+      to: process.env.EMAIL_USER,
       subject: `New Contact Form Submission from ${name}`,
       text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nCountry: ${country}\nMessage: ${message}`
     });
