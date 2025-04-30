@@ -19,7 +19,14 @@ app.get('/', (req, res) => {
   res.json({ message: 'Server is running!' });
 });
 
+// Test Route to Verify API Routes
+app.get('/api/test', (req, res) => {
+  console.log('Received request for /api/test');
+  res.json({ message: 'API routes are working!' });
+});
+
 // PostgreSQL Connection
+console.log('Setting up PostgreSQL connection...');
 const pool = new Pool({
   user: process.env.user,
   host: process.env.host,
@@ -40,7 +47,17 @@ pool.connect((err) => {
   }
 });
 
+// Test Database Connection with a Simple Query
+pool.query('SELECT NOW()', (err, result) => {
+  if (err) {
+    console.error('Initial database query failed:', err.stack);
+  } else {
+    console.log('Initial database query successful:', result.rows);
+  }
+});
+
 // Nodemailer Setup
+console.log('Setting up Nodemailer...');
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -73,22 +90,22 @@ app.post('/api/signup', async (req, res) => {
     return res.status(400).json({ errors });
   }
   try {
-    // Check if email already exists
+    console.log('Checking if email exists:', email);
     const existingUser = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
     if (existingUser.rows.length > 0) {
       console.log('Email already registered:', email);
       return res.status(400).json({ error: 'Email already registered' });
     }
-    // Hash password
+    console.log('Hashing password...');
     const hashedPassword = await bcrypt.hash(password, 10);
     console.log('Password hashed successfully');
-    // Insert user
+    console.log('Inserting user into database...');
     await pool.query(
       'INSERT INTO users (name, email, phone, country, password, created_at) VALUES ($1, $2, $3, $4, $5, NOW())',
       [name, email, phone, country, hashedPassword]
     );
     console.log('User inserted into database:', name);
-    // Send email notification
+    console.log('Sending signup email...');
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: process.env.EMAIL_USER,
@@ -107,6 +124,7 @@ app.post('/api/signup', async (req, res) => {
 app.get('/api/projects', async (req, res) => {
   console.log('Received request for /api/projects');
   try {
+    console.log('Executing query to fetch projects...');
     const result = await pool.query('SELECT * FROM projects ORDER BY id');
     console.log('Projects fetched:', result.rows);
     res.json(result.rows);
@@ -120,6 +138,7 @@ app.get('/api/projects', async (req, res) => {
 app.get('/api/reviews', async (req, res) => {
   console.log('Received request for /api/reviews');
   try {
+    console.log('Executing query to fetch reviews...');
     const result = await pool.query('SELECT * FROM reviews ORDER BY created_at DESC');
     console.log('Reviews fetched:', result.rows);
     res.json(result.rows);
@@ -139,6 +158,7 @@ app.post('/api/reviews', async (req, res) => {
     return res.status(400).json({ errors });
   }
   try {
+    console.log('Inserting review into database...');
     const result = await pool.query(
       'INSERT INTO reviews (name, email, phone, country, comment, created_at) VALUES ($1, $2, $3, $4, $5, NOW()) RETURNING *',
       [name, email, phone, country, comment]
@@ -161,11 +181,13 @@ app.post('/api/contact', async (req, res) => {
     return res.status(400).json({ errors });
   }
   try {
+    console.log('Inserting contact message into database...');
     await pool.query(
       'INSERT INTO contacts (name, email, phone, country, message, created_at) VALUES ($1, $2, $3, $4, $5, NOW())',
       [name, email, phone, country, message]
     );
     console.log('Contact message inserted:', name);
+    console.log('Sending contact email...');
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: process.env.EMAIL_USER,
@@ -187,5 +209,5 @@ app.use((err, req, res, next) => {
 });
 
 // Start Server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
