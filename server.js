@@ -13,6 +13,12 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// Test Route to Verify Server is Running
+app.get('/', (req, res) => {
+  console.log('Received request for /');
+  res.json({ message: 'Server is running!' });
+});
+
 // PostgreSQL Connection
 const pool = new Pool({
   user: process.env.user,
@@ -20,6 +26,14 @@ const pool = new Pool({
   database: process.env.database,
   password: process.env.password,
   port: process.env.port
+});
+
+pool.connect((err) => {
+  if (err) {
+    console.error('Database connection failed:', err.stack);
+  } else {
+    console.log('Connected to database successfully');
+  }
 });
 
 // Nodemailer Setup
@@ -47,24 +61,29 @@ const validateUserInput = (data, isReview = false, isSignup = false) => {
 // Routes
 // Signup
 app.post('/api/signup', async (req, res) => {
+  console.log('Received request for /api/signup');
   const { name, email, phone, country, password } = req.body;
   const errors = validateUserInput({ name, email, phone, country, password }, false, true);
   if (Object.keys(errors).length) {
+    console.log('Validation errors:', errors);
     return res.status(400).json({ errors });
   }
   try {
     // Check if email already exists
     const existingUser = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
     if (existingUser.rows.length > 0) {
+      console.log('Email already registered:', email);
       return res.status(400).json({ error: 'Email already registered' });
     }
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
+    console.log('Password hashed successfully');
     // Insert user
     await pool.query(
       'INSERT INTO users (name, email, phone, country, password, created_at) VALUES ($1, $2, $3, $4, $5, NOW())',
       [name, email, phone, country, hashedPassword]
     );
+    console.log('User inserted into database:', name);
     // Send email notification
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
@@ -72,6 +91,7 @@ app.post('/api/signup', async (req, res) => {
       subject: `New User Signup: ${name}`,
       text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nCountry: ${country}`
     });
+    console.log('Signup email sent to:', process.env.EMAIL_USER);
     res.json({ message: 'Signup successful' });
   } catch (err) {
     console.error('Error during signup:', err);
@@ -81,8 +101,10 @@ app.post('/api/signup', async (req, res) => {
 
 // Get all projects
 app.get('/api/projects', async (req, res) => {
+  console.log('Received request for /api/projects');
   try {
     const result = await pool.query('SELECT * FROM projects ORDER BY id');
+    console.log('Projects fetched:', result.rows);
     res.json(result.rows);
   } catch (err) {
     console.error('Error fetching projects:', err);
@@ -92,8 +114,10 @@ app.get('/api/projects', async (req, res) => {
 
 // Get all reviews
 app.get('/api/reviews', async (req, res) => {
+  console.log('Received request for /api/reviews');
   try {
     const result = await pool.query('SELECT * FROM reviews ORDER BY created_at DESC');
+    console.log('Reviews fetched:', result.rows);
     res.json(result.rows);
   } catch (err) {
     console.error('Error fetching reviews:', err);
@@ -103,9 +127,11 @@ app.get('/api/reviews', async (req, res) => {
 
 // Post a review
 app.post('/api/reviews', async (req, res) => {
+  console.log('Received request for /api/reviews');
   const { name, email, phone, country, comment } = req.body;
   const errors = validateUserInput({ name, email, phone, country, comment }, true);
   if (Object.keys(errors).length) {
+    console.log('Validation errors:', errors);
     return res.status(400).json({ errors });
   }
   try {
@@ -113,6 +139,7 @@ app.post('/api/reviews', async (req, res) => {
       'INSERT INTO reviews (name, email, phone, country, comment, created_at) VALUES ($1, $2, $3, $4, $5, NOW()) RETURNING *',
       [name, email, phone, country, comment]
     );
+    console.log('Review inserted:', result.rows[0]);
     res.json(result.rows[0]);
   } catch (err) {
     console.error('Error saving review:', err);
@@ -122,9 +149,11 @@ app.post('/api/reviews', async (req, res) => {
 
 // Post contact form
 app.post('/api/contact', async (req, res) => {
+  console.log('Received request for /api/contact');
   const { name, email, phone, country, message } = req.body;
   const errors = validateUserInput({ name, email, phone, country, message });
   if (Object.keys(errors).length) {
+    console.log('Validation errors:', errors);
     return res.status(400).json({ errors });
   }
   try {
@@ -132,12 +161,14 @@ app.post('/api/contact', async (req, res) => {
       'INSERT INTO contacts (name, email, phone, country, message, created_at) VALUES ($1, $2, $3, $4, $5, NOW())',
       [name, email, phone, country, message]
     );
+    console.log('Contact message inserted:', name);
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: process.env.EMAIL_USER,
       subject: `New Contact Form Submission from ${name}`,
       text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nCountry: ${country}\nMessage: ${message}`
     });
+    console.log('Contact email sent to:', process.env.EMAIL_USER);
     res.json({ message: 'Message saved and email sent' });
   } catch (err) {
     console.error('Error processing contact form:', err);
