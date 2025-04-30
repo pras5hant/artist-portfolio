@@ -6,9 +6,11 @@ const bcrypt = require('bcryptjs');
 const app = express();
 
 // Middleware
-app.use(cors());
-app.use(express.json());
-
+app.use(cors({
+  origin: 'https://codevibesyou.netlify.app/',
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type']
+}));
 // PostgreSQL Connection
 const pool = new Pool({
   user: 'postgres', // Replace with your PostgreSQL username

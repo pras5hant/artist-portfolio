@@ -1,0 +1,6 @@
+Internal Database URL: postgresql://portfolio_db:7ffwV7TbeSY0FIcTQmn5vinqKb2x4BF7@dpg-d08pk7qdbo4c73e65db0-a/portfolio_db_zzi4
+Host: dpg-d08pk7qdbo4c73e65db0-a
+Port: 5432
+Database: portfolio_db_zzi4
+Username: portfolio_db
+Password: 7ffwV7TbeSY0FIcTQmn5vinqKb2x4BF7
